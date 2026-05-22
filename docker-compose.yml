@@ -4,20 +4,10 @@ services:
     image: omora-website
     container_name: omora-website
     restart: unless-stopped
-    environment:
-      # production domain by default; override for local testing:
-      #   SITE_ADDRESS=:80 docker compose up --build
-      - SITE_ADDRESS=${SITE_ADDRESS:-omora.alfredsensual.com}
+    # Published on localhost only. The droplet's existing reverse proxy
+    # (the one serving managementdoral.alfredsensual.com) terminates
+    # HTTPS and forwards omora.alfredsensual.com to this port.
+    #
+    # For a quick local preview, open http://localhost:8092
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      # live config — edit Caddyfile and `docker compose restart`, no rebuild
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      # persist TLS certificates across restarts (avoids Let's Encrypt limits)
-      - caddy_data:/data
-      - caddy_config:/config
-
-volumes:
-  caddy_data:
-  caddy_config:
+      - "127.0.0.1:8092:80"

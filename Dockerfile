@@ -16,11 +16,10 @@ FROM caddy:2-alpine
 # the built site
 COPY --from=build /app/dist /srv
 
-# baked-in config (docker-compose mounts a live copy over this,
-# so the image also works standalone with `docker run`)
+# Caddy config (static file server on port 80)
 COPY Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 80 443
+EXPOSE 80
 
 # Caddy's default entrypoint runs:
 #   caddy run --config /etc/caddy/Caddyfile --adapter caddyfile

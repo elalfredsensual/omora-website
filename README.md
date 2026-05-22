@@ -2,10 +2,13 @@
 
 Sitio web de una sola página para mostrar las carteras y accesorios tejidos a
 mano de **Omora**. Hecho con [Astro](https://astro.build) (sitio estático) y
-servido con **[Caddy](https://caddyserver.com)** dentro de un contenedor Docker
-— Caddy entrega HTTPS automático sin configuración de certificados.
+servido con **[Caddy](https://caddyserver.com)** dentro de un contenedor Docker.
 
 **En producción:** https://omora.alfredsensual.com
+
+> El contenedor sirve el sitio como HTTP simple en `127.0.0.1:8092`. El dominio
+> y el HTTPS los maneja el reverse proxy que ya existe en el droplet (el mismo
+> que sirve `managementdoral.alfredsensual.com`).
 
 ---
 
@@ -39,7 +42,6 @@ Ejemplo para Chile: `56912345678`. Todos los botones de WhatsApp usan este valor
 ### Catálogo de carteras
 Archivo: `src/data/purses.ts` — cada cartera es un bloque con `name`,
 `description`, `price` (en CLP, solo el número), `category` e `image`.
-Para agregar una, copia un bloque y edita los campos.
 
 ### Agregar fotos reales
 1. Copia la foto en `public/images/purses/` (ej: `cartera-ejemplo.jpg`).
@@ -54,70 +56,62 @@ Archivo: `src/components/About.astro` — busca los comentarios `EDITABLE`.
 
 ## 3. Probar el contenedor en local (opcional)
 
-Requiere Docker Desktop corriendo. `SITE_ADDRESS=:80` hace que Caddy sirva en
-HTTP simple (sin intentar pedir un certificado para el dominio real):
+Requiere Docker Desktop corriendo:
 
 ```bash
-# PowerShell
-$env:SITE_ADDRESS=":80"; docker compose up --build
-# luego abre http://localhost
+docker compose up --build
+# luego abre http://localhost:8092
 ```
 
 ---
 
 ## 4. Despliegue en omora.alfredsensual.com
 
-El sitio se publica como un subdominio en el droplet de DigitalOcean, **sin
-afectar el despliegue de Superset** (que sigue en el puerto 8091). Caddy ocupa
-los puertos 80 y 443 y obtiene el certificado HTTPS automáticamente.
+El sitio se publica en el **mismo droplet** de DigitalOcean que ya aloja
+`managementdoral.alfredsensual.com`. El contenedor de Omora solo escucha en
+`127.0.0.1:8092` (HTTP local, no público); el reverse proxy que ya existe en el
+droplet se encarga del dominio y del certificado HTTPS.
 
 ### Paso 1 — DNS en GoDaddy
-En GoDaddy → *Mis productos* → `alfredsensual.com` → **DNS**, agrega un registro:
+GoDaddy → `alfredsensual.com` → DNS → nuevo registro:
 
-| Tipo | Nombre  | Valor (Datos)        | TTL       |
-|------|---------|----------------------|-----------|
-| A    | `omora` | *IP del droplet*     | 600 seg   |
-
-Esto hace que `omora.alfredsensual.com` apunte al droplet. Espera a que propague
-(`nslookup omora.alfredsensual.com` debe devolver la IP del droplet).
+| Tipo | Nombre  | Valor (Datos)                  | TTL     |
+|------|---------|--------------------------------|---------|
+| A    | `omora` | *IP del droplet* (la misma que `managementdoral`) | 600 seg |
 
 ### Paso 2 — Subir el sitio a GitHub
 1. Crea un repositorio **privado** vacío en https://github.com/new
-   (sugerencia de nombre: `omora-website`, sin README ni .gitignore).
-2. Desde tu PC, en la carpeta del proyecto:
+   (nombre sugerido: `omora-website`, sin README ni .gitignore).
+2. En tu PC, dentro de la carpeta del proyecto:
 
    ```bash
    git remote add origin https://github.com/elalfredsensual/omora-website.git
    git push -u origin main
    ```
 
-   *(El repositorio ya está iniciado y con un commit inicial.)*
-
-### Paso 3 — En el droplet (por SSH)
+### Paso 3 — En el droplet: levantar el contenedor
 ```bash
-# verifica que los puertos 80 y 443 estén libres (no debe imprimir nada)
-sudo ss -tlnp | grep -E ':80 |:443 '
-
-# abre el firewall si usas ufw
-sudo ufw allow 80,443/tcp
-
-# clona y levanta
 git clone https://github.com/elalfredsensual/omora-website.git /opt/omora
 cd /opt/omora
 docker compose up -d --build
+curl -I http://127.0.0.1:8092      # debe responder "HTTP/1.1 200 OK"
+```
+No hace falta abrir puertos en el firewall: `8092` es solo local.
+
+### Paso 4 — Agregar la ruta en el reverse proxy existente
+Hay que agregar al reverse proxy del droplet una entrada nueva:
+
+```
+omora.alfredsensual.com  →  http://127.0.0.1:8092   (con HTTPS)
 ```
 
-> Si DigitalOcean tiene un *Cloud Firewall* aplicado al droplet, permite también
-> HTTP (80) y HTTPS (443) ahí.
+Los comandos exactos dependen de qué reverse proxy esté en uso (nginx + certbot,
+Caddy, Nginx Proxy Manager, Traefik…). **El despliegue de Superset no se toca.**
 
-### Paso 4 — Verificar
-- Abre **https://omora.alfredsensual.com** — debería cargar con candado HTTPS.
-- Si algo falla con el certificado: `docker compose logs -f web`
-  (Caddy reintenta solo; el DNS debe estar propagado y el puerto 80 accesible).
+### Paso 5 — Verificar
+Abre **https://omora.alfredsensual.com** (debe cargar con candado HTTPS).
 
 ### Actualizar el sitio publicado
-Tras editar contenido (carteras, fotos, textos):
-
 ```bash
 # en tu PC
 git add -A && git commit -m "Actualiza contenido" && git push
@@ -139,6 +133,6 @@ cd /opt/omora && git pull && docker compose up -d --build
 │  ├─ pages/index.astro  la página única
 │  └─ styles/          estilos globales y tokens de diseño
 ├─ Dockerfile          build (Node) → servir con Caddy
-├─ Caddyfile           configuración del servidor + HTTPS automático
-└─ docker-compose.yml  orquestación del contenedor
+├─ Caddyfile           servidor estático en el puerto 80 del contenedor
+└─ docker-compose.yml  publica el sitio en 127.0.0.1:8092
 ```

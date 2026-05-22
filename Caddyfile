@@ -1,12 +1,13 @@
 # ───────────────────────────────────────────────────────────────
-#  Omora — Caddy web server
+#  Omora — static file server (Caddy)
 #
-#  SITE_ADDRESS is supplied by docker-compose.yml:
-#    • production  → omora.alfredsensual.com   (automatic HTTPS)
-#    • local test  → :80                       (plain HTTP)
+#  This container ONLY serves the site over plain HTTP on port 80.
+#  HTTPS and the omora.alfredsensual.com domain are handled by the
+#  reverse proxy already running on the droplet — the same one that
+#  serves managementdoral.alfredsensual.com.
 # ───────────────────────────────────────────────────────────────
 
-{$SITE_ADDRESS:omora.alfredsensual.com} {
+:80 {
 	root * /srv
 	encode zstd gzip
 	file_server
@@ -26,15 +27,3 @@
 		-Server
 	}
 }
-
-# ───────────────────────────────────────────────────────────────
-#  To ALSO put your Superset dashboard on a domain later:
-#    1. Add a DNS record for the subdomain → this droplet.
-#    2. Add  extra_hosts: ["host.docker.internal:host-gateway"]
-#       to the `web` service in docker-compose.yml.
-#    3. Uncomment and adjust the block below.
-#
-#  bi.alfredsensual.com {
-#      reverse_proxy host.docker.internal:8091
-#  }
-# ───────────────────────────────────────────────────────────────
