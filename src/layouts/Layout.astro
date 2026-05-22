@@ -6,6 +6,7 @@ import '@fontsource/nunito-sans/700.css';
 import '@fontsource/nunito-sans/800.css';
 import '../styles/global.css';
 import { site } from '../data/site';
+import Loader from '../components/Loader.astro';
 
 interface Props {
   title?: string;
@@ -50,8 +51,20 @@ const ogImage = new URL('/images/og-image.jpg', Astro.site ?? site.domain).href;
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://wa.me" />
+
+    <!-- skip the intro animation if it already played this session -->
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem('omoraSeen')) {
+          document.documentElement.classList.add('skip-loader');
+        } else {
+          sessionStorage.setItem('omoraSeen', '1');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
+    <Loader />
     <a href="#galeria" class="skip-link">Saltar a la galería</a>
     <slot />
 

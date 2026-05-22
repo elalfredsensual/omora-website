@@ -1,0 +1,149 @@
+---
+// Preloader: the Omora hummingbird "knits" itself in, row by row.
+---
+
+<div class="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <div class="loader__art">
+      <span class="loader__ghost"></span>
+      <span class="loader__bird"></span>
+    </div>
+    <p class="loader__word">Omora</p>
+    <p class="loader__status">
+      tejiendo<span>.</span><span>.</span><span>.</span>
+    </p>
+  </div>
+</div>
+
+<style>
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background: var(--cream);
+    animation: loader-out 0.55s ease 2.2s forwards;
+  }
+
+  .loader__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.15rem;
+  }
+
+  /* the bird */
+  .loader__art {
+    position: relative;
+    width: clamp(140px, 38vw, 196px);
+    aspect-ratio: 272 / 159;
+    animation: settle 0.55s ease 1.6s both;
+  }
+
+  .loader__ghost,
+  .loader__bird {
+    position: absolute;
+    inset: 0;
+    -webkit-mask: url('/images/logo-icon.png') center / contain no-repeat;
+    mask: url('/images/logo-icon.png') center / contain no-repeat;
+  }
+
+  /* faint full bird = the pattern waiting to be filled */
+  .loader__ghost {
+    background: var(--rose);
+    opacity: 0.15;
+  }
+
+  /* solid bird, revealed bottom-up in discrete rows like knitting */
+  .loader__bird {
+    background: repeating-linear-gradient(
+      0deg,
+      var(--rose) 0 4px,
+      var(--rose-deep) 4px 5px
+    );
+    clip-path: inset(100% 0 0 0);
+    animation: knit 1.4s steps(10) 0.2s forwards;
+  }
+
+  /* wordmark + status */
+  .loader__word {
+    font-family: var(--font-serif);
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(9px);
+    animation: rise 0.6s ease 1s forwards;
+  }
+
+  .loader__status {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+    opacity: 0;
+    animation: rise 0.5s ease 1.25s forwards;
+  }
+  .loader__status span {
+    animation: blink 1.4s ease infinite;
+  }
+  .loader__status span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .loader__status span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes knit {
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes settle {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    45% {
+      transform: translateY(-7px) scale(1.04);
+    }
+  }
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes loader-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  /* already seen this session → don't replay */
+  :global(html.skip-loader) .loader {
+    display: none;
+  }
+
+  /* respect reduced-motion: skip the intro entirely */
+  @media (prefers-reduced-motion: reduce) {
+    .loader {
+      display: none;
+    }
+  }
+</style>
