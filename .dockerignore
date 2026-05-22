@@ -6,6 +6,7 @@ dist
 .vscode
 .idea
 .claude
+deploy
 *.md
 Screenshot*.png
 .env

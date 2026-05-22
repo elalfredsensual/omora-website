@@ -98,15 +98,33 @@ curl -I http://127.0.0.1:8092      # debe responder "HTTP/1.1 200 OK"
 ```
 No hace falta abrir puertos en el firewall: `8092` es solo local.
 
-### Paso 4 — Agregar la ruta en el reverse proxy existente
-Hay que agregar al reverse proxy del droplet una entrada nueva:
+### Paso 4 — Agregar el sitio a nginx (con HTTPS)
+El droplet usa **nginx** en el host como reverse proxy. Se agrega un archivo de
+configuración nuevo solo para Omora — **el de `managementdoral` no se toca**.
 
-```
-omora.alfredsensual.com  →  http://127.0.0.1:8092   (con HTTPS)
+Primero, confirma que el DNS ya resuelve (necesario para el certificado):
+
+```bash
+dig +short omora.alfredsensual.com    # debe devolver la IP del droplet
 ```
 
-Los comandos exactos dependen de qué reverse proxy esté en uso (nginx + certbot,
-Caddy, Nginx Proxy Manager, Traefik…). **El despliegue de Superset no se toca.**
+Luego, en el droplet:
+
+```bash
+cd /opt/omora
+sudo cp deploy/omora.alfredsensual.com.conf \
+        /etc/nginx/sites-available/omora.alfredsensual.com
+sudo ln -s /etc/nginx/sites-available/omora.alfredsensual.com \
+           /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d omora.alfredsensual.com
+```
+
+`certbot` agrega el certificado HTTPS y la redirección HTTP→HTTPS
+automáticamente. Si pregunta por la redirección, elige **2 (Redirect)**.
+
+> Si tu nginx no usa `sites-available/` / `sites-enabled/`, copia el archivo a
+> `/etc/nginx/conf.d/omora.alfredsensual.com.conf` y omite el paso del `ln -s`.
 
 ### Paso 5 — Verificar
 Abre **https://omora.alfredsensual.com** (debe cargar con candado HTTPS).
@@ -132,6 +150,7 @@ cd /opt/omora && git pull && docker compose up -d --build
 │  ├─ layouts/         plantilla base (HTML, SEO)
 │  ├─ pages/index.astro  la página única
 │  └─ styles/          estilos globales y tokens de diseño
+├─ deploy/             config de nginx para el droplet
 ├─ Dockerfile          build (Node) → servir con Caddy
 ├─ Caddyfile           servidor estático en el puerto 80 del contenedor
 └─ docker-compose.yml  publica el sitio en 127.0.0.1:8092
