@@ -5,6 +5,10 @@
 //  To add a photo:  drop the image in  public/images/purses/
 //                   and set  image: '/images/purses/your-photo.jpg'
 //  Leave  image: ''  to show a branded "Foto próximamente" placeholder.
+//
+//  ⚠️  PRECIOS PROVISORIOS — los valores de `price` son estimados.
+//      Reemplázalos por los precios reales (en pesos chilenos).
+//      Los nombres también son sugerencias: cámbialos si quieres.
 // ─────────────────────────────────────────────────────────────
 
 export type Category = 'Carteras' | 'Bolsos' | 'Clutches' | 'Mochilas';
@@ -24,98 +28,65 @@ export const purses: Purse[] = [
   {
     id: 'cartera-atardecer',
     name: 'Cartera Atardecer',
-    description: 'Tonos cálidos tejidos en punto cruzado, ideal para el día a día.',
-    price: 28000,
-    category: 'Carteras',
-    image: '',
-  },
-  {
-    id: 'bolso-trenza',
-    name: 'Bolso Trenza',
-    description: 'Diseño de trenzas en hilo grueso, espacioso y resistente.',
-    price: 34500,
-    category: 'Bolsos',
-    image: '',
-  },
-  {
-    id: 'clutch-amapola',
-    name: 'Clutch Amapola',
-    description: 'Pequeño y elegante, perfecto para ocasiones especiales.',
-    price: 19000,
-    category: 'Clutches',
-    image: '',
-  },
-  {
-    id: 'cartera-luna',
-    name: 'Cartera Luna',
-    description: 'Forma redonda con asa de madera natural, suave al tacto.',
-    price: 31000,
-    category: 'Carteras',
-    image: '',
-  },
-  {
-    id: 'bolso-praga',
-    name: 'Bolso Praga',
-    description: 'Estilo bandolera tejido en crochet, con bolsillo interior.',
-    price: 37500,
-    category: 'Bolsos',
-    image: '',
-  },
-  {
-    id: 'mochila-aurora',
-    name: 'Mochila Aurora',
-    description: 'Mochila tejida liviana, con cordón ajustable y forro suave.',
-    price: 42000,
-    category: 'Mochilas',
-    image: '',
-  },
-  {
-    id: 'cartera-almendra',
-    name: 'Cartera Almendra',
-    description: 'Punto compacto en tonos tierra, con cierre de botón de madera.',
-    price: 26500,
-    category: 'Carteras',
-    image: '',
-  },
-  {
-    id: 'clutch-petalo',
-    name: 'Clutch Pétalo',
-    description: 'Sobre tejido a mano con un delicado detalle de flor en relieve.',
-    price: 21500,
-    category: 'Clutches',
-    image: '',
-  },
-  {
-    id: 'bolso-camino',
-    name: 'Bolso Camino',
-    description: 'Bolso amplio tipo tote, tejido en algodón natural resistente.',
-    price: 39000,
-    category: 'Bolsos',
-    image: '',
-  },
-  {
-    id: 'cartera-brisa',
-    name: 'Cartera Brisa',
-    description: 'Tejido calado y fresco, con forro de tela interior.',
-    price: 24000,
-    category: 'Carteras',
-    image: '',
-  },
-  {
-    id: 'bolso-nido',
-    name: 'Bolso Nido',
-    description: 'Textura tipo nido en hilo trenzado, con asas reforzadas.',
+    description:
+      'Cartera media luna en tono mostaza, con tejido acanalado y asas de madera redondas.',
     price: 35000,
-    category: 'Bolsos',
-    image: '',
+    category: 'Carteras',
+    image: '/images/purses/cartera-atardecer.jpg',
   },
   {
-    id: 'clutch-rocio',
-    name: 'Clutch Rocío',
-    description: 'Minimalista y delicado, con cadena dorada desmontable.',
-    price: 22500,
+    id: 'bolso-noche',
+    name: 'Bolso Noche',
+    description:
+      'Bolso de hombro en azul noche, tejido en punto bodoque, con asa y correa larga.',
+    price: 38000,
+    category: 'Bolsos',
+    image: '/images/purses/bolso-noche.jpg',
+  },
+  {
+    id: 'clutch-esmeralda',
+    name: 'Clutch Esmeralda',
+    description:
+      'Clutch en verde esmeralda con borla blanca y correa larga desmontable.',
+    price: 26000,
     category: 'Clutches',
-    image: '',
+    image: '/images/purses/clutch-esmeralda.jpg',
+  },
+  {
+    id: 'cartera-amelia',
+    name: 'Cartera Amelia',
+    description:
+      'Cartera en punto bodoque rosado, con cadena dorada y un moño tejido a juego.',
+    price: 32000,
+    category: 'Carteras',
+    image: '/images/purses/cartera-amelia.jpg',
+  },
+  {
+    id: 'cartera-piedra',
+    name: 'Cartera Piedra',
+    description:
+      'Cartera tejida en gris, con tapa en contraste terracota y borla azul desmontable.',
+    price: 30000,
+    category: 'Carteras',
+    image: '/images/purses/cartera-piedra.jpg',
+  },
+  {
+    id: 'bolso-margarita',
+    name: 'Bolso Margarita',
+    description:
+      'Bolso tipo balde en amarillo, tejido acanalado, con asa superior y cordón ajustable.',
+    price: 28000,
+    category: 'Bolsos',
+    image: '/images/purses/bolso-margarita.jpg',
+  },
+  {
+    id: 'cartera-cereza',
+    name: 'Cartera Cereza',
+    description:
+      'Cartera media luna en rojo cereza, con tejido acanalado y asas de madera redondas.',
+    price: 35000,
+    category: 'Carteras',
+    image: '/images/purses/cartera-cereza.jpg',
   },
 ];
 

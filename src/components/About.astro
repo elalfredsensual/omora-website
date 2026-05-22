@@ -18,12 +18,16 @@ const values = [
 <section class="section about" id="sobre">
   <div class="container about__grid">
     <div class="about__visual" data-reveal>
-      {/* EDITABLE: reemplaza este bloque por una foto real.
-          Sugerencia: <img src="/images/about.jpg" alt="Omora tejiendo a mano" /> */}
-      <div class="about__placeholder">
-        <img src="/images/logo-icon.png" alt="" class="about__bird" />
-        <span>Aquí irá una foto de Omora</span>
-      </div>
+      {/* EDITABLE: cambia /images/about.jpg por otra foto si quieres. */}
+      <img
+        src="/images/about.jpg"
+        alt="Bolso Omora tejido a mano, llevado como bandolera"
+        class="about__photo"
+        width="596"
+        height="598"
+        loading="lazy"
+        decoding="async"
+      />
       <div class="about__badge">
         <strong>100%</strong>
         <span>hecho a mano</span>
@@ -93,29 +97,12 @@ const values = [
   .about__visual {
     position: relative;
   }
-  .about__placeholder {
+  .about__photo {
+    width: 100%;
     aspect-ratio: 4 / 5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+    object-fit: cover;
     border-radius: var(--radius);
-    border: 1px solid var(--rose-soft);
-    background: linear-gradient(155deg, #f4e7e3, #e7d2ce 70%, #ddbfb9 100%);
     box-shadow: var(--shadow);
-  }
-  .about__bird {
-    width: 42%;
-    max-width: 160px;
-    opacity: 0.55;
-  }
-  .about__placeholder span {
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--rose-deep);
   }
   .about__badge {
     position: absolute;
