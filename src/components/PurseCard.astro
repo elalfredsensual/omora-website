@@ -1,0 +1,241 @@
+---
+import { formatPrice, type Purse } from '../data/purses';
+
+interface Props {
+  purse: Purse;
+  index: number;
+}
+
+const { purse, index } = Astro.props;
+const price = formatPrice(purse.price);
+const delay = ((index % 3) * 0.08).toFixed(2);
+---
+
+<article
+  class="card"
+  data-card
+  data-reveal
+  data-name={purse.name}
+  data-category={purse.category}
+  data-price={price}
+  data-desc={purse.description}
+  data-image={purse.image}
+  style={`--reveal-delay: ${delay}s`}
+>
+  <figure class="card__media">
+    {
+      purse.image ? (
+        <img src={purse.image} alt={purse.name} loading="lazy" decoding="async" />
+      ) : (
+        <div class={`card__ph card__ph--${index % 3}`}>
+          <img src="/images/logo-icon.png" alt="" class="card__ph-bird" />
+          <span>Foto próximamente</span>
+        </div>
+      )
+    }
+    <span class="card__zoom" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm6-2 4 4M11 8v6M8 11h6"
+        ></path>
+      </svg>
+    </span>
+  </figure>
+
+  <div class="card__body">
+    <span class="card__cat">{purse.category}</span>
+    <h3 class="card__name">{purse.name}</h3>
+    <p class="card__desc">{purse.description}</p>
+    <div class="card__foot">
+      <span class="card__price">{price}</span>
+      <button class="card__btn" data-card-open aria-label={`Ver detalle de ${purse.name}`}>
+        Ver detalle
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease),
+      border-color 0.35s var(--ease);
+  }
+  .card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow);
+    border-color: var(--rose-soft);
+  }
+
+  .card__media {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--cream-2);
+  }
+  .card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+  .card:hover .card__media img {
+    transform: scale(1.06);
+  }
+
+  /* branded placeholder shown until a real photo is added */
+  .card__ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    text-align: center;
+  }
+  .card__ph--0 {
+    background: linear-gradient(160deg, #f6ece2, #ecd9d4);
+  }
+  .card__ph--1 {
+    background: linear-gradient(160deg, #f3e6e2, #e7d2ce);
+  }
+  .card__ph--2 {
+    background: linear-gradient(160deg, #f4ecdf, #e9ddc9);
+  }
+  .card__ph-bird {
+    width: 38%;
+    max-width: 110px;
+    opacity: 0.5;
+    transition: transform 0.6s var(--ease);
+  }
+  .card:hover .card__ph-bird {
+    transform: scale(1.07) rotate(-3deg);
+  }
+  .card__ph span {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+    opacity: 0.85;
+  }
+
+  .card__zoom {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(251, 246, 239, 0.92);
+    color: var(--rose-deep);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .card:hover .card__zoom,
+  .card:focus-within .card__zoom {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.3rem 1.4rem 1.45rem;
+  }
+
+  .card__cat {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+  }
+
+  .card__name {
+    font-size: 1.32rem;
+    margin-top: 0.35rem;
+  }
+
+  .card__desc {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--cocoa-soft);
+    line-height: 1.6;
+  }
+
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1.15rem;
+  }
+
+  .card__price {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .card__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--rose-deep);
+    background: transparent;
+    border: 0;
+    padding: 0.3rem 0;
+  }
+  .card__btn svg {
+    transition: transform 0.25s var(--ease);
+  }
+  .card:hover .card__btn svg {
+    transform: translateX(4px);
+  }
+  /* stretch the button hit-area over the whole card */
+  .card__btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+  .card__btn:focus-visible {
+    outline: none;
+  }
+  .card:has(.card__btn:focus-visible) {
+    outline: 3px solid var(--rose);
+    outline-offset: 3px;
+  }
+</style>

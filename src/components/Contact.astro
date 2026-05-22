@@ -1,0 +1,109 @@
+---
+import { site, waLink } from '../data/site';
+
+const wa = waLink(
+  'Hola Omora. Vi su sitio web y me gustaría conocer más sobre sus tejidos.',
+);
+---
+
+<section class="section contact" id="contacto">
+  <div class="container">
+    <div class="contact__card" data-reveal>
+      <span class="kicker">Conversemos</span>
+      <h2 class="h-section">¿Lista para tener tu pieza única?</h2>
+      <p class="contact__text">
+        Escríbenos por WhatsApp para conocer la disponibilidad, encargar un
+        diseño personalizado o resolver cualquier duda. Estaremos felices de
+        ayudarte a encontrar la cartera perfecta para ti.
+      </p>
+
+      <div class="contact__actions">
+        <a href={wa} class="btn btn--whatsapp btn--lg" target="_blank" rel="noopener">
+          <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M16 3C9 3 3.5 8.5 3.5 15.5c0 2.4.7 4.7 1.9 6.7L3 29l7-1.8c1.9 1 4 1.6 6.1 1.6 7 0 12.5-5.5 12.5-12.5S23 3 16 3Zm0 22.8c-1.9 0-3.7-.5-5.3-1.5l-.4-.2-4.1 1.1 1.1-4-.3-.4a10.2 10.2 0 0 1-1.6-5.6c0-5.7 4.7-10.3 10.5-10.3 5.8 0 10.5 4.6 10.5 10.3S21.8 25.8 16 25.8Zm5.8-7.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.7-4.4-3.8-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.6 0-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.2 3.3 1.4 3.6.2.2 2.5 3.9 6.1 5.4 2.3 1 3.2 1.1 4.3.9.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"
+            ></path>
+          </svg>
+          Escríbenos por WhatsApp
+        </a>
+        <a
+          href={site.instagramUrl}
+          class="btn btn--ghost btn--lg"
+          target="_blank"
+          rel="noopener"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.42a3.8 3.8 0 0 1-1.38-.9 3.8 3.8 0 0 1-.9-1.38c-.17-.42-.37-1.06-.42-2.23C2.21 15.58 2.2 15.2 2.2 12s0-3.58.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.17 1.06-.37 2.23-.42C8.42 2.21 8.8 2.2 12 2.2Zm0 4.86A4.94 4.94 0 1 0 16.94 12 4.94 4.94 0 0 0 12 7.06Zm0 8.08A3.14 3.14 0 1 1 15.14 12 3.14 3.14 0 0 1 12 15.14Zm5.14-8.34a1.15 1.15 0 1 0 1.15 1.15 1.15 1.15 0 0 0-1.15-1.15Z"
+            ></path>
+          </svg>
+          Síguenos en Instagram
+        </a>
+      </div>
+
+      <p class="contact__handle">
+        <a href={site.instagramUrl} target="_blank" rel="noopener">
+          @{site.instagram}
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+  }
+
+  .contact__card {
+    position: relative;
+    max-width: 720px;
+    margin-inline: auto;
+    text-align: center;
+    padding: clamp(2.5rem, 5vw, 4.25rem) clamp(1.5rem, 4vw, 3.5rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .contact__card::before {
+    content: '';
+    position: absolute;
+    top: -90px;
+    right: -90px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--rose-tint), transparent 70%);
+  }
+
+  .contact__text {
+    position: relative;
+    margin: 1rem auto 0;
+    max-width: 48ch;
+    color: var(--cocoa-soft);
+    font-size: 1.07rem;
+  }
+
+  .contact__actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .contact__handle {
+    position: relative;
+    margin-top: 1.5rem;
+    font-weight: 700;
+    color: var(--rose-deep);
+  }
+  .contact__handle a:hover {
+    text-decoration: underline;
+  }
+</style>

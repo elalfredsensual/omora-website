@@ -1,0 +1,120 @@
+---
+import { site, navLinks } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="#inicio" class="footer__logo">
+        <img src="/images/logo-icon-cream.png" alt="" width="52" height="30" />
+        <span>Omora</span>
+      </a>
+      <p class="footer__tagline">{site.tagline}</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Secciones">
+      <h2 class="footer__title">Explora</h2>
+      <ul>
+        {navLinks.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <h2 class="footer__title">Síguenos</h2>
+      <ul>
+        <li>
+          <a href={site.instagramUrl} target="_blank" rel="noopener">
+            Instagram · @{site.instagram}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>© {year} {site.name}. Tejido a mano en {site.location}.</p>
+    <p class="footer__credit">Cada pieza, hecha con paciencia y amor.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--footer);
+    color: #e9ddcd;
+    padding-top: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2.75rem;
+  }
+
+  .footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: #fdf8f0;
+  }
+  .footer__logo img {
+    height: 30px;
+    width: auto;
+  }
+
+  .footer__tagline {
+    margin-top: 0.9rem;
+    max-width: 32ch;
+    color: #c4b6a3;
+    font-size: 0.97rem;
+  }
+
+  .footer__title {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 1rem;
+  }
+
+  .footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  .footer__col a {
+    color: #d8cab6;
+    font-size: 0.97rem;
+    transition: color 0.2s var(--ease);
+  }
+  .footer__col a:hover {
+    color: #fdf8f0;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid rgba(233, 221, 205, 0.14);
+    font-size: 0.86rem;
+    color: #a99b87;
+  }
+
+  @media (max-width: 720px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

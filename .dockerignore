@@ -1,0 +1,15 @@
+node_modules
+dist
+.astro
+.git
+.gitignore
+.vscode
+.idea
+.claude
+*.md
+Screenshot*.png
+.env
+.env.*
+npm-debug.log*
+Thumbs.db
+.DS_Store

@@ -1,0 +1,232 @@
+---
+import { site, waLink } from '../data/site';
+
+const wa = waLink('Hola Omora. Me gustaría conocer más sobre sus tejidos.');
+---
+
+<section class="hero" id="inicio">
+  <div class="hero__bg" aria-hidden="true">
+    <span class="hero__glow hero__glow--1"></span>
+    <span class="hero__glow hero__glow--2"></span>
+    <img src="/images/logo-icon.png" alt="" class="hero__watermark" />
+  </div>
+
+  <div class="container hero__inner">
+    <h1 class="visually-hidden">
+      Omora — carteras y accesorios tejidos a mano en Chile
+    </h1>
+
+    <p class="kicker hero__kicker" data-reveal>Tejido a mano · Hecho en Chile</p>
+
+    <img
+      src="/images/logo-full.png"
+      alt="Omora Tejidos"
+      class="hero__logo"
+      width="1000"
+      height="326"
+      fetchpriority="high"
+      data-reveal
+      style="--reveal-delay: 0.08s"
+    />
+
+    <p class="hero__tagline" data-reveal style="--reveal-delay: 0.16s">
+      {site.tagline}
+    </p>
+
+    <p class="hero__sub" data-reveal style="--reveal-delay: 0.24s">
+      Carteras, bolsos y accesorios únicos, tejidos punto a punto.
+      Cada pieza nace de la dedicación y el cariño por lo hecho a mano.
+    </p>
+
+    <div class="hero__actions" data-reveal style="--reveal-delay: 0.32s">
+      <a href="#galeria" class="btn btn--primary btn--lg">Ver la colección</a>
+      <a href={wa} class="btn btn--ghost btn--lg" target="_blank" rel="noopener">
+        Escríbenos
+      </a>
+    </div>
+
+    <ul class="hero__features" data-reveal style="--reveal-delay: 0.4s">
+      <li>Piezas únicas</li>
+      <li>Hechas a mano</li>
+      <li>Con dedicación</li>
+    </ul>
+  </div>
+
+  <a href="#galeria" class="hero__scroll" aria-label="Ver la galería">
+    <span>Descubre</span>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M6 9l6 6 6-6"></path>
+    </svg>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: calc(var(--nav-h) + clamp(1.5rem, 5vw, 3.5rem));
+    padding-bottom: clamp(4rem, 9vw, 6rem);
+    overflow: hidden;
+    background: linear-gradient(180deg, #fdf9f3 0%, var(--cream) 55%, var(--cream-2) 100%);
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.55;
+  }
+  .hero__glow--1 {
+    width: 44vw;
+    height: 44vw;
+    max-width: 540px;
+    max-height: 540px;
+    top: -10%;
+    right: -8%;
+    background: radial-gradient(circle, rgba(190, 126, 124, 0.55), transparent 70%);
+  }
+  .hero__glow--2 {
+    width: 38vw;
+    height: 38vw;
+    max-width: 460px;
+    max-height: 460px;
+    bottom: -14%;
+    left: -10%;
+    background: radial-gradient(circle, rgba(231, 210, 206, 0.85), transparent 70%);
+  }
+  .hero__watermark {
+    position: absolute;
+    width: clamp(220px, 30vw, 380px);
+    top: 16%;
+    left: 4%;
+    opacity: 0.05;
+    transform: rotate(-12deg);
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero__kicker {
+    margin-bottom: 1.3rem;
+  }
+  .hero__kicker::before {
+    display: none;
+  }
+
+  .hero__logo {
+    width: clamp(270px, 44vw, 470px);
+    height: auto;
+  }
+
+  .hero__tagline {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(1.4rem, 1rem + 1.7vw, 2.35rem);
+    line-height: 1.25;
+    color: var(--ink);
+    max-width: 17ch;
+    margin-top: clamp(1.1rem, 3vw, 1.9rem);
+  }
+
+  .hero__sub {
+    margin-top: 1.1rem;
+    max-width: 44ch;
+    color: var(--cocoa-soft);
+    font-size: 1.06rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .hero__features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem 1.6rem;
+    margin: 2.2rem 0 0;
+    color: var(--cocoa-soft);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .hero__features li {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+  .hero__features li::before {
+    content: '✦';
+    color: var(--rose);
+    font-size: 0.8rem;
+  }
+  .hero__features li:first-child::before {
+    display: none;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--cocoa-soft);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .hero__scroll svg {
+    animation: hero-bounce 1.9s var(--ease) infinite;
+  }
+  .hero__scroll:hover {
+    color: var(--rose-deep);
+  }
+
+  @keyframes hero-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(5px);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero__features {
+      gap: 0.4rem 1.1rem;
+    }
+    .hero__scroll {
+      display: none;
+    }
+  }
+</style>
