@@ -29,64 +29,100 @@ export const purses: Purse[] = [
     id: 'cartera-atardecer',
     name: 'Cartera Atardecer',
     description:
-      'Cartera media luna en tono mostaza, con tejido acanalado y asas de madera redondas.',
+      'Cartera media luna en tono mostaza, tejido acanalado y asas circulares doradas.',
     price: 35000,
     category: 'Carteras',
     image: '/images/purses/cartera-atardecer.jpg',
   },
   {
-    id: 'bolso-noche',
-    name: 'Bolso Noche',
+    id: 'clutch-tinta',
+    name: 'Clutch Tinta',
     description:
-      'Bolso de hombro en azul noche, tejido en punto bodoque, con asa y correa larga.',
+      'Cartera de cuerpo suave con borla colgante, en negro profundo.',
+    price: 28000,
+    category: 'Clutches',
+    image: '/images/purses/clutch-tinta.jpg',
+  },
+  {
+    id: 'bolso-bosque',
+    name: 'Bolso Bosque',
+    description:
+      'Bolso de hombro en verde oliva, tejido calado con flecos laterales y cierre central.',
+    price: 42000,
+    category: 'Bolsos',
+    image: '/images/purses/bolso-bosque.jpg',
+  },
+  {
+    id: 'cartera-vino',
+    name: 'Cartera Vino',
+    description:
+      'Cartera burdeos con punto en relieve, asas rectangulares de madera y borla a juego.',
+    price: 36000,
+    category: 'Carteras',
+    image: '/images/purses/cartera-vino.jpg',
+  },
+  {
+    id: 'clutch-amapola',
+    name: 'Clutch Amapola',
+    description:
+      'Cartera con flecos rojos en toda la pieza y cadena fina dorada desmontable.',
+    price: 32000,
+    category: 'Clutches',
+    image: '/images/purses/clutch-amapola.jpg',
+  },
+  {
+    id: 'cartera-trigo',
+    name: 'Cartera Trigo',
+    description:
+      'Cartera dorada con largo fleco de hilo, asas circulares en tono dorado y borde en punto bodoque.',
+    price: 38000,
+    category: 'Carteras',
+    image: '/images/purses/cartera-trigo.jpg',
+  },
+  {
+    id: 'bolso-carbon',
+    name: 'Bolso Carbón',
+    description:
+      'Bolso tote en café profundo, con asa de hombro tejida y borla a juego.',
     price: 38000,
     category: 'Bolsos',
-    image: '/images/purses/bolso-noche.jpg',
+    image: '/images/purses/bolso-carbon.jpg',
   },
   {
-    id: 'clutch-esmeralda',
-    name: 'Clutch Esmeralda',
+    id: 'cartera-margarita',
+    name: 'Cartera Margarita',
     description:
-      'Clutch en verde esmeralda con borla blanca y correa larga desmontable.',
-    price: 26000,
-    category: 'Clutches',
-    image: '/images/purses/clutch-esmeralda.jpg',
-  },
-  {
-    id: 'cartera-amelia',
-    name: 'Cartera Amelia',
-    description:
-      'Cartera en punto bodoque rosado, con cadena dorada y un moño tejido a juego.',
-    price: 32000,
-    category: 'Carteras',
-    image: '/images/purses/cartera-amelia.jpg',
-  },
-  {
-    id: 'cartera-piedra',
-    name: 'Cartera Piedra',
-    description:
-      'Cartera tejida en gris, con tapa en contraste terracota y borla azul desmontable.',
-    price: 30000,
-    category: 'Carteras',
-    image: '/images/purses/cartera-piedra.jpg',
-  },
-  {
-    id: 'bolso-margarita',
-    name: 'Bolso Margarita',
-    description:
-      'Bolso tipo balde en amarillo, tejido acanalado, con asa superior y cordón ajustable.',
+      'Pequeña cartera amarilla con detalle de bodoques arriba y un fleco generoso en la base.',
     price: 28000,
-    category: 'Bolsos',
-    image: '/images/purses/bolso-margarita.jpg',
+    category: 'Carteras',
+    image: '/images/purses/cartera-margarita.jpg',
   },
   {
-    id: 'cartera-cereza',
-    name: 'Cartera Cereza',
+    id: 'clutch-miel',
+    name: 'Clutch Miel',
     description:
-      'Cartera media luna en rojo cereza, con tejido acanalado y asas de madera redondas.',
-    price: 35000,
+      'Cartera de cuerpo suave color miel con borla a juego — ideal para ocasiones especiales.',
+    price: 28000,
+    category: 'Clutches',
+    image: '/images/purses/clutch-miel.jpg',
+  },
+  {
+    id: 'cartera-otono',
+    name: 'Cartera Otoño',
+    description:
+      'Cartera mostaza en punto burbuja, con asas rectangulares de madera y borla.',
+    price: 36000,
     category: 'Carteras',
-    image: '/images/purses/cartera-cereza.jpg',
+    image: '/images/purses/cartera-otono.jpg',
+  },
+  {
+    id: 'clutch-azabache',
+    name: 'Clutch Azabache',
+    description:
+      'Cartera con flecos negros en toda la pieza y cadena fina dorada desmontable.',
+    price: 32000,
+    category: 'Clutches',
+    image: '/images/purses/clutch-azabache.jpg',
   },
 ];
 
