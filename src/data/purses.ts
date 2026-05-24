@@ -45,7 +45,10 @@ export const purses: Purse[] = [
       'Cartera de cuerpo suave con borla colgante, en negro profundo.',
     price: 28000,
     category: 'Clutches',
-    images: ['/images/purses/clutch-tinta.jpg'],
+    images: [
+      '/images/purses/clutch-tinta.jpg',
+      '/images/purses/clutch-tinta-2.jpg',
+    ],
   },
   {
     id: 'bolso-bosque',
@@ -54,7 +57,10 @@ export const purses: Purse[] = [
       'Bolso de hombro en verde oliva, tejido calado con flecos laterales y cierre central.',
     price: 42000,
     category: 'Bolsos',
-    images: ['/images/purses/bolso-bosque.jpg'],
+    images: [
+      '/images/purses/bolso-bosque.jpg',
+      '/images/purses/bolso-bosque-2.jpg',
+    ],
   },
   {
     id: 'cartera-vino',
@@ -72,7 +78,10 @@ export const purses: Purse[] = [
       'Cartera con flecos rojos en toda la pieza y cadena fina dorada desmontable.',
     price: 32000,
     category: 'Clutches',
-    images: ['/images/purses/clutch-amapola.jpg'],
+    images: [
+      '/images/purses/clutch-amapola.jpg',
+      '/images/purses/clutch-amapola-2.jpg',
+    ],
   },
   {
     id: 'cartera-trigo',
@@ -90,7 +99,10 @@ export const purses: Purse[] = [
       'Bolso tote en café profundo, con asa de hombro tejida y borla a juego.',
     price: 38000,
     category: 'Bolsos',
-    images: ['/images/purses/bolso-carbon.jpg'],
+    images: [
+      '/images/purses/bolso-carbon.jpg',
+      '/images/purses/bolso-carbon-2.jpg',
+    ],
   },
   {
     id: 'cartera-margarita',
@@ -108,7 +120,10 @@ export const purses: Purse[] = [
       'Cartera de cuerpo suave color miel con borla a juego — ideal para ocasiones especiales.',
     price: 28000,
     category: 'Clutches',
-    images: ['/images/purses/clutch-miel.jpg'],
+    images: [
+      '/images/purses/clutch-miel.jpg',
+      '/images/purses/clutch-miel-2.jpg',
+    ],
   },
   {
     id: 'cartera-otono',
@@ -126,7 +141,10 @@ export const purses: Purse[] = [
       'Cartera con flecos negros en toda la pieza y cadena fina dorada desmontable.',
     price: 32000,
     category: 'Clutches',
-    images: ['/images/purses/clutch-azabache.jpg'],
+    images: [
+      '/images/purses/clutch-azabache.jpg',
+      '/images/purses/clutch-azabache-2.jpg',
+    ],
   },
 ];
 
