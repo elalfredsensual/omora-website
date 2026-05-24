@@ -89,7 +89,10 @@ import PurseCard from './PurseCard.astro';
       </svg>
     </button>
 
-    <div class="lightbox__media" id="lb-media"></div>
+    <div class="lightbox__media-wrap">
+      <div class="lightbox__media" id="lb-media"></div>
+      <div class="lightbox__thumbs" id="lb-thumbs" role="tablist" aria-label="Más fotos" hidden></div>
+    </div>
 
     <div class="lightbox__info">
       <span class="lightbox__cat" id="lb-cat"></span>
@@ -210,13 +213,58 @@ import PurseCard from './PurseCard.astro';
     transform: none;
   }
 
-  .lightbox__media {
+  .lightbox__media-wrap {
+    display: flex;
+    flex-direction: column;
     background: var(--cream-2);
+    min-width: 0;
+    min-height: 0;
+  }
+  .lightbox__media {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
   .lightbox__media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .lightbox__thumbs {
+    display: flex;
+    gap: 0.45rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--cream);
+    border-top: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .lightbox__thumbs button {
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.65;
+    background: var(--cream-2);
+    transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+  .lightbox__thumbs button:hover {
+    opacity: 1;
+  }
+  .lightbox__thumbs button.is-active {
+    opacity: 1;
+    border-color: var(--rose);
+  }
+  .lightbox__thumbs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   .lightbox__ph {
     width: 100%;
@@ -386,6 +434,7 @@ import PurseCard from './PurseCard.astro';
   // ---- lightbox ----
   const lb = document.getElementById('lightbox');
   const lbMedia = document.getElementById('lb-media');
+  const lbThumbs = document.getElementById('lb-thumbs');
   const lbCat = document.getElementById('lb-cat');
   const lbName = document.getElementById('lb-name');
   const lbDesc = document.getElementById('lb-desc');
@@ -394,9 +443,22 @@ import PurseCard from './PurseCard.astro';
   let visible = [];
   let idx = 0;
   let lastFocus = null;
+  let lbImages = [];
+  let lbImgIdx = 0;
 
   const escapeHtml = (s) =>
     s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  function showImage(i) {
+    if (!lbImages.length) return;
+    lbImgIdx = (i + lbImages.length) % lbImages.length;
+    const src = lbImages[lbImgIdx];
+    const alt = lbName.textContent || '';
+    lbMedia.innerHTML = `<img src="${encodeURI(src)}" alt="${escapeHtml(alt)}">`;
+    lbThumbs.querySelectorAll('button').forEach((b, j) => {
+      b.classList.toggle('is-active', j === lbImgIdx);
+    });
+  }
 
   function render(card) {
     const d = card.dataset;
@@ -404,9 +466,33 @@ import PurseCard from './PurseCard.astro';
     lbName.textContent = d.name;
     lbDesc.textContent = d.desc;
     lbPrice.textContent = d.price;
-    lbMedia.innerHTML = d.image
-      ? `<img src="${encodeURI(d.image)}" alt="${escapeHtml(d.name)}">`
-      : `<div class="lightbox__ph"><img src="/images/logo-icon.png" alt=""><span>Foto próximamente</span></div>`;
+    try {
+      lbImages = JSON.parse(d.images || '[]').filter(Boolean);
+    } catch (_) {
+      lbImages = [];
+    }
+    if (lbImages.length) {
+      if (lbImages.length > 1) {
+        lbThumbs.innerHTML = lbImages
+          .map(
+            (src, i) =>
+              `<button type="button" role="tab" aria-label="Foto ${i + 1} de ${lbImages.length}"><img src="${encodeURI(src)}" alt=""></button>`,
+          )
+          .join('');
+        lbThumbs.hidden = false;
+        lbThumbs.querySelectorAll('button').forEach((b, i) =>
+          b.addEventListener('click', () => showImage(i)),
+        );
+      } else {
+        lbThumbs.innerHTML = '';
+        lbThumbs.hidden = true;
+      }
+      showImage(0);
+    } else {
+      lbMedia.innerHTML = `<div class="lightbox__ph"><img src="/images/logo-icon.png" alt=""><span>Foto próximamente</span></div>`;
+      lbThumbs.innerHTML = '';
+      lbThumbs.hidden = true;
+    }
     const msg = `Hola Omora 🌿 Me interesa la cartera "${d.name}" (${d.price}). ¿Me puedes dar más información?`;
     lbWa.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
   }
