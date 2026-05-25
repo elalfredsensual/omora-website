@@ -38,6 +38,7 @@ const year = new Date().getFullYear();
   <div class="container footer__bottom">
     <p>© {year} {site.name}. Tejido a mano en {site.location}.</p>
     <p class="footer__credit">Cada pieza, hecha con paciencia y amor.</p>
+    <a href="/admin" class="footer__admin" aria-label="Panel de administración">admin</a>
   </div>
 </footer>
 
@@ -103,12 +104,29 @@ const year = new Date().getFullYear();
   .footer__bottom {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1.5rem;
     padding-block: 1.5rem;
     border-top: 1px solid rgba(233, 221, 205, 0.14);
     font-size: 0.86rem;
     color: #a99b87;
+  }
+  .footer__admin {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: lowercase;
+    color: #7a6c58;
+    opacity: 0.55;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    transition: opacity 0.2s var(--ease), color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+  .footer__admin:hover {
+    opacity: 1;
+    color: #fdf8f0;
+    background: rgba(255, 255, 255, 0.05);
   }
 
   @media (max-width: 720px) {

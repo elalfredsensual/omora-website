@@ -155,6 +155,13 @@ p {
   margin-inline: auto;
   text-align: center;
 }
+.section-head--center > * {
+  text-align: center;
+}
+.section-head--center .lead {
+  margin-inline: auto;
+  max-width: 44ch;
+}
 
 .kicker {
   display: inline-flex;
@@ -175,7 +182,14 @@ p {
   background: var(--rose);
 }
 
-.section-head--center .kicker::before {
+/* In centered contexts, the leading bar throws off the optical centering,
+   and inline-flex margin-bottom is inconsistent — promote to block. */
+.section-head--center .kicker,
+.contact__card .kicker {
+  display: block;
+}
+.section-head--center .kicker::before,
+.contact__card .kicker::before {
   display: none;
 }
 

@@ -413,46 +413,68 @@
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: 0.7rem;
 }
+/* the whole tile is a label that toggles the inner checkbox */
 .images__item {
   position: relative;
+  display: block;
   aspect-ratio: 4 / 5;
   background: var(--cream-2);
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 2px solid var(--line);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.images__item:hover {
+  border-color: var(--rose-soft);
+  transform: translateY(-2px);
 }
 .images__item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.images__item label {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  background: linear-gradient(180deg, transparent 60%, rgba(46, 38, 32, 0.7));
-  color: #fff;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0.5rem 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: none;
-  text-align: center;
+  display: block;
+  transition: opacity 0.2s var(--ease);
 }
 .images__item input[type='checkbox'] {
   position: absolute;
-  top: 0.45rem;
-  right: 0.45rem;
-  width: 22px;
-  height: 22px;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   accent-color: #a13a36;
+  z-index: 2;
 }
-.images__item input[type='checkbox']:checked + img {
+.images__item-mark {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  padding: 0.55rem 0.5rem;
+  background: rgba(161, 58, 54, 0.92);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: none;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  pointer-events: none;
+}
+.images__item:has(input:checked) {
+  border-color: #a13a36;
+}
+.images__item:has(input:checked) img {
   opacity: 0.35;
+}
+.images__item:has(input:checked) .images__item-mark {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .upload {
