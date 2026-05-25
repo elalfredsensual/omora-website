@@ -1,19 +1,16 @@
 // ─────────────────────────────────────────────────────────────
-//  Omora — purse catalogue
+//  Omora — purse types + seed data
 //
-//  To add a purse:  copy a block and edit the fields.
-//  To add photos:   drop the images in  public/images/purses/
-//                   and list their paths in the  images  array.
-//                   The FIRST image is the one shown on the card;
-//                   the rest appear as thumbnails inside the lightbox.
-//  Leave  images: []  to show a branded "Foto próximamente" placeholder.
-//
-//  ⚠️  PRECIOS PROVISORIOS — los valores de `price` son estimados.
-//      Reemplázalos por los precios reales (en pesos chilenos).
-//      Los nombres también son sugerencias: cámbialos si quieres.
+//  In production, the live catalogue lives in a JSON file on a
+//  Docker volume (so admin edits persist across redeploys). The
+//  array below is the SEED — written to disk on first start if no
+//  data file exists yet. Don't edit it to manage the catalogue; use
+//  the /admin panel instead.
 // ─────────────────────────────────────────────────────────────
 
 export type Category = 'Carteras' | 'Bolsos' | 'Clutches' | 'Mochilas';
+
+export type PurseStatus = 'visible' | 'out-of-stock' | 'hidden';
 
 export interface Purse {
   id: string;
@@ -26,9 +23,15 @@ export interface Purse {
    *  The first one shows on the gallery card; additional ones
    *  appear as thumbnails inside the lightbox. */
   images: string[];
+  status: PurseStatus;
+  /** Lower = earlier in the gallery. */
+  order: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export const purses: Purse[] = [
+/** Initial catalogue, used to seed the data file on first run. */
+export const seedPurses: Omit<Purse, 'order' | 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'cartera-atardecer',
     name: 'Cartera Atardecer',
@@ -37,6 +40,7 @@ export const purses: Purse[] = [
     price: 35000,
     category: 'Carteras',
     images: ['/images/purses/cartera-atardecer.jpg'],
+    status: 'visible',
   },
   {
     id: 'clutch-tinta',
@@ -49,6 +53,7 @@ export const purses: Purse[] = [
       '/images/purses/clutch-tinta.jpg',
       '/images/purses/clutch-tinta-2.jpg',
     ],
+    status: 'visible',
   },
   {
     id: 'bolso-bosque',
@@ -61,6 +66,7 @@ export const purses: Purse[] = [
       '/images/purses/bolso-bosque.jpg',
       '/images/purses/bolso-bosque-2.jpg',
     ],
+    status: 'visible',
   },
   {
     id: 'cartera-vino',
@@ -70,6 +76,7 @@ export const purses: Purse[] = [
     price: 36000,
     category: 'Carteras',
     images: ['/images/purses/cartera-vino.jpg'],
+    status: 'visible',
   },
   {
     id: 'clutch-amapola',
@@ -82,6 +89,7 @@ export const purses: Purse[] = [
       '/images/purses/clutch-amapola.jpg',
       '/images/purses/clutch-amapola-2.jpg',
     ],
+    status: 'visible',
   },
   {
     id: 'cartera-trigo',
@@ -91,6 +99,7 @@ export const purses: Purse[] = [
     price: 38000,
     category: 'Carteras',
     images: ['/images/purses/cartera-trigo.jpg'],
+    status: 'visible',
   },
   {
     id: 'bolso-carbon',
@@ -103,6 +112,7 @@ export const purses: Purse[] = [
       '/images/purses/bolso-carbon.jpg',
       '/images/purses/bolso-carbon-2.jpg',
     ],
+    status: 'visible',
   },
   {
     id: 'cartera-margarita',
@@ -112,6 +122,7 @@ export const purses: Purse[] = [
     price: 28000,
     category: 'Carteras',
     images: ['/images/purses/cartera-margarita.jpg'],
+    status: 'visible',
   },
   {
     id: 'clutch-miel',
@@ -124,6 +135,7 @@ export const purses: Purse[] = [
       '/images/purses/clutch-miel.jpg',
       '/images/purses/clutch-miel-2.jpg',
     ],
+    status: 'visible',
   },
   {
     id: 'cartera-otono',
@@ -133,6 +145,7 @@ export const purses: Purse[] = [
     price: 36000,
     category: 'Carteras',
     images: ['/images/purses/cartera-otono.jpg'],
+    status: 'visible',
   },
   {
     id: 'clutch-azabache',
@@ -145,6 +158,7 @@ export const purses: Purse[] = [
       '/images/purses/clutch-azabache.jpg',
       '/images/purses/clutch-azabache-2.jpg',
     ],
+    status: 'visible',
   },
 ];
 
@@ -155,5 +169,4 @@ export function formatPrice(clp: number): string {
   return `CLP ${value}K`;
 }
 
-/** Unique categories in catalogue order, for the gallery filter. */
-export const categories: Category[] = [...new Set(purses.map((p) => p.category))];
+export const ALL_CATEGORIES: Category[] = ['Carteras', 'Bolsos', 'Clutches', 'Mochilas'];

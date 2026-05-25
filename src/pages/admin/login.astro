@@ -1,0 +1,62 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import {
+  COOKIE_NAME,
+  cookieOptions,
+  passwordMatches,
+  signSession,
+  verifySession,
+} from '../../lib/auth';
+
+export const prerender = false;
+
+// already logged in? bounce to dashboard
+const existing = Astro.cookies.get(COOKIE_NAME)?.value;
+if (verifySession(existing)) {
+  return Astro.redirect('/admin');
+}
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const password = String(form.get('password') || '');
+  if (passwordMatches(password)) {
+    Astro.cookies.set(
+      COOKIE_NAME,
+      signSession(),
+      cookieOptions(Astro.url.protocol === 'https:'),
+    );
+    return Astro.redirect('/admin');
+  }
+  error = 'Contraseña incorrecta.';
+}
+---
+
+<AdminLayout title="Acceso · Panel Omora" hideNav={true}>
+  <main class="login">
+    <form method="post" class="login__card">
+      <img
+        src="/images/logo-full.png"
+        alt="Omora Tejidos"
+        class="login__logo"
+        width="220"
+        height="72"
+      />
+      <h1>Panel de administración</h1>
+      <label class="login__field">
+        <span>Contraseña</span>
+        <input
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+          autofocus
+        />
+      </label>
+      {error && <p class="login__error">{error}</p>}
+      <button type="submit" class="btn btn--primary btn--lg login__submit">
+        Entrar
+      </button>
+    </form>
+  </main>
+</AdminLayout>

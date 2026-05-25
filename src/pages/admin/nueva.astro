@@ -1,0 +1,142 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { create, saveUpload } from '../../lib/db';
+import { ALL_CATEGORIES, type Category, type PurseStatus } from '../../data/purses';
+
+export const prerender = false;
+
+let error = '';
+let form = {
+  name: '',
+  description: '',
+  price: '',
+  category: 'Carteras' as Category,
+  status: 'visible' as PurseStatus,
+};
+
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+  form = {
+    name: String(data.get('name') || '').trim(),
+    description: String(data.get('description') || '').trim(),
+    price: String(data.get('price') || '').trim(),
+    category: (String(data.get('category') || 'Carteras') as Category),
+    status: (String(data.get('status') || 'visible') as PurseStatus),
+  };
+
+  const price = Number(form.price);
+  if (!form.name) error = 'El nombre es obligatorio.';
+  else if (!form.description) error = 'La descripción es obligatoria.';
+  else if (!Number.isFinite(price) || price < 0) error = 'El precio debe ser un número válido.';
+  else if (!ALL_CATEGORIES.includes(form.category)) error = 'Categoría inválida.';
+
+  if (!error) {
+    const files = data.getAll('photos') as File[];
+    const images: string[] = [];
+    for (const f of files) {
+      if (f && typeof f === 'object' && 'size' in f && f.size > 0) {
+        const path = await saveUpload(f, form.name);
+        images.push(path);
+      }
+    }
+
+    await create({
+      name: form.name,
+      description: form.description,
+      price,
+      category: form.category,
+      status: form.status,
+      images,
+    });
+
+    return Astro.redirect('/admin');
+  }
+}
+---
+
+<AdminLayout title="Nueva cartera · Panel Omora">
+  <main class="form-page">
+    <h1>Nueva cartera</h1>
+
+    <form method="post" enctype="multipart/form-data" class="form">
+      {error && <p class="form__error">{error}</p>}
+
+      <div class="form__row">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" name="name" value={form.name} required autofocus />
+      </div>
+
+      <div class="form__row">
+        <label for="description">Descripción</label>
+        <textarea id="description" name="description" required>{form.description}</textarea>
+      </div>
+
+      <div class="form__row--inline">
+        <div class="form__row">
+          <label for="price">Precio (CLP)</label>
+          <input
+            id="price"
+            type="number"
+            name="price"
+            value={form.price}
+            required
+            min="0"
+            step="500"
+            inputmode="numeric"
+          />
+          <p class="form__help">Solo el número. Ej: 35000 → CLP 35K</p>
+        </div>
+        <div class="form__row">
+          <label for="category">Categoría</label>
+          <select id="category" name="category" required>
+            {
+              ALL_CATEGORIES.map((c) => (
+                <option value={c} selected={c === form.category}>
+                  {c}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+        <div class="form__row">
+          <label for="status">Estado</label>
+          <select id="status" name="status" required>
+            <option value="visible" selected={form.status === 'visible'}>Visible</option>
+            <option value="out-of-stock" selected={form.status === 'out-of-stock'}>Sin stock</option>
+            <option value="hidden" selected={form.status === 'hidden'}>Oculta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form__row">
+        <span>Fotos</span>
+        <label class="upload" for="photos">
+          + Agregar fotos
+          <span class="upload__chosen" id="upload-chosen">Ninguna seleccionada</span>
+          <input id="photos" type="file" name="photos" accept="image/*" multiple />
+        </label>
+        <p class="form__help">Puedes seleccionar varias. La primera será la portada.</p>
+      </div>
+
+      <div class="form__actions">
+        <a href="/admin" class="btn btn--ghost form__actions-left">← Cancelar</a>
+        <button type="submit" class="btn btn--primary btn--lg">Guardar cartera</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    const input = document.getElementById('photos') as HTMLInputElement | null;
+    const out = document.getElementById('upload-chosen');
+    input?.addEventListener('change', () => {
+      const files = input.files;
+      if (!files || files.length === 0) {
+        out!.textContent = 'Ninguna seleccionada';
+      } else if (files.length === 1) {
+        out!.textContent = files[0].name;
+      } else {
+        out!.textContent = `${files.length} fotos seleccionadas`;
+      }
+    });
+  </script>
+</AdminLayout>

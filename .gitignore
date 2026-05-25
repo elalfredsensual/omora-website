@@ -16,6 +16,10 @@ pnpm-debug.log*
 .env.production
 .env.local
 
+# admin data (local testing only — production lives in a Docker volume)
+data/
+data-test/
+
 # editor / tooling / OS
 .DS_Store
 Thumbs.db

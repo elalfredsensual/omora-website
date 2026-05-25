@@ -1,0 +1,128 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { listAll } from '../../lib/db';
+import { formatPrice } from '../../data/purses';
+
+export const prerender = false;
+
+const purses = await listAll();
+const counts = {
+  visible: purses.filter((p) => p.status === 'visible').length,
+  oos: purses.filter((p) => p.status === 'out-of-stock').length,
+  hidden: purses.filter((p) => p.status === 'hidden').length,
+};
+const statusLabel = (s: string) =>
+  s === 'visible' ? 'Visible' : s === 'out-of-stock' ? 'Agotada' : 'Oculta';
+---
+
+<AdminLayout title="Carteras · Panel Omora">
+  <main class="admin">
+    <header class="admin__header">
+      <div>
+        <h1>Carteras</h1>
+        <p>
+          {purses.length} en total · {counts.visible} visibles · {counts.oos} agotadas · {counts.hidden} ocultas
+        </p>
+      </div>
+      <a href="/admin/nueva" class="btn btn--primary btn--lg">+ Nueva cartera</a>
+    </header>
+
+    {
+      purses.length === 0 && (
+        <p class="admin__empty">
+          Todavía no hay carteras.{' '}
+          <a href="/admin/nueva">Agrega la primera</a>.
+        </p>
+      )
+    }
+
+    <div class="admin-grid">
+      {
+        purses.map((p) => (
+          <article class={`admin-card admin-card--${p.status}`}>
+            <div class="admin-card__media">
+              {p.images[0] ? (
+                <img src={p.images[0]} alt={p.name} />
+              ) : (
+                <div class="admin-card__noimg">Sin foto</div>
+              )}
+            </div>
+            <div class="admin-card__body">
+              <div class="admin-card__head">
+                <h2>{p.name}</h2>
+                <span class={`admin-pill admin-pill--${p.status}`}>
+                  {statusLabel(p.status)}
+                </span>
+              </div>
+              <p class="admin-card__cat">
+                {p.category} · {formatPrice(p.price)}
+              </p>
+              <p class="admin-card__desc">{p.description}</p>
+              <div class="admin-card__actions">
+                <a href={`/admin/${p.id}/editar`} class="btn btn--ghost">
+                  Editar
+                </a>
+                <form
+                  method="post"
+                  action={`/admin/${p.id}/estado`}
+                  class="admin-card__status-form"
+                >
+                  <label for={`s-${p.id}`} class="visually-hidden">
+                    Cambiar estado
+                  </label>
+                  <select
+                    id={`s-${p.id}`}
+                    name="status"
+                    data-status-select
+                  >
+                    <option value="visible" selected={p.status === 'visible'}>
+                      Visible
+                    </option>
+                    <option
+                      value="out-of-stock"
+                      selected={p.status === 'out-of-stock'}
+                    >
+                      Sin stock
+                    </option>
+                    <option value="hidden" selected={p.status === 'hidden'}>
+                      Oculta
+                    </option>
+                  </select>
+                </form>
+                <form
+                  method="post"
+                  action={`/admin/${p.id}/eliminar`}
+                  class="admin-card__delete"
+                  data-delete-form
+                  data-name={p.name}
+                >
+                  <button type="submit" class="btn btn--danger">
+                    Eliminar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </main>
+
+  <script>
+    // submit the status form whenever the dropdown changes
+    document.querySelectorAll('[data-status-select]').forEach((el) => {
+      el.addEventListener('change', (e) => {
+        (e.target as HTMLSelectElement).form?.submit();
+      });
+    });
+    // confirm before permanent delete
+    document.querySelectorAll('[data-delete-form]').forEach((form) => {
+      form.addEventListener('submit', (e) => {
+        const name = (form as HTMLElement).dataset.name || 'esta cartera';
+        if (!confirm(`¿Eliminar "${name}" permanentemente?\n\nSe borrarán también sus fotos. Esta acción no se puede deshacer.`)) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</AdminLayout>

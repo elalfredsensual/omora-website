@@ -1,25 +1,31 @@
-# ─── Stage 1: build the static site ───────────────────────────
+# ─── Stage 1: build the SSR site ──────────────────────────────
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# install dependencies (cached unless package files change)
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# build the site into /app/dist
 COPY . .
 RUN npm run build
 
-# ─── Stage 2: serve with Caddy (static files + automatic HTTPS) ──
-FROM caddy:2-alpine
+# ─── Stage 2: lean Node runtime ───────────────────────────────
+FROM node:20-alpine AS runtime
+WORKDIR /app
 
-# the built site
-COPY --from=build /app/dist /srv
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=80
+# Persisted under a Docker volume — admin edits survive redeploys.
+ENV DATA_DIR=/data
 
-# Caddy config (static file server on port 80)
-COPY Caddyfile /etc/caddy/Caddyfile
+# Production dependencies only
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Built server + client assets
+COPY --from=build /app/dist ./dist
 
 EXPOSE 80
 
-# Caddy's default entrypoint runs:
-#   caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+# ADMIN_PASSWORD and SESSION_SECRET must come from docker-compose env
+CMD ["node", "./dist/server/entry.mjs"]

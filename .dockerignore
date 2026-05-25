@@ -11,6 +11,8 @@ deploy
 Screenshot*.png
 .env
 .env.*
+data
+data-test
 npm-debug.log*
 Thumbs.db
 .DS_Store

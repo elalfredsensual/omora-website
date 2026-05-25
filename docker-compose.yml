@@ -4,6 +4,15 @@ services:
     image: omora-website
     container_name: omora-website
     restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=80
+      - DATA_DIR=/data
+      # Required — must be set in .env (next to this file).
+      # If missing, the container will refuse to start.
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?ADMIN_PASSWORD is required, set it in .env}
+      - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET is required, set it in .env}
     # Published on localhost only. The droplet's existing reverse proxy
     # (the one serving managementdoral.alfredsensual.com) terminates
     # HTTPS and forwards omora.alfredsensual.com to this port.
@@ -11,3 +20,9 @@ services:
     # For a quick local preview, open http://localhost:8092
     ports:
       - "127.0.0.1:8092:80"
+    volumes:
+      # Persists the catalogue JSON + uploaded photos across redeploys.
+      - omora_data:/data
+
+volumes:
+  omora_data:

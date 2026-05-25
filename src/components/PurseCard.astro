@@ -11,6 +11,7 @@ const price = formatPrice(purse.price);
 const delay = ((index % 3) * 0.08).toFixed(2);
 const mainImage = purse.images[0] ?? '';
 const photoCount = purse.images.length;
+const oos = purse.status === 'out-of-stock';
 ---
 
 <article
@@ -22,6 +23,7 @@ const photoCount = purse.images.length;
   data-price={price}
   data-desc={purse.description}
   data-images={JSON.stringify(purse.images)}
+  data-status={purse.status}
   style={`--reveal-delay: ${delay}s`}
 >
   <figure class="card__media">
@@ -74,6 +76,7 @@ const photoCount = purse.images.length;
         ></path>
       </svg>
     </span>
+    {oos && <span class="card__oos">Agotada</span>}
   </figure>
 
   <div class="card__body">
@@ -135,6 +138,27 @@ const photoCount = purse.images.length;
   }
   .card:hover .card__media img {
     transform: scale(1.06);
+  }
+
+  /* out-of-stock: subtle desaturation + bottom band */
+  .card[data-status='out-of-stock'] .card__media img {
+    filter: grayscale(0.35) brightness(0.96);
+  }
+  .card__oos {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem 0.7rem;
+    background: rgba(74, 59, 48, 0.88);
+    color: #fff;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-transform: uppercase;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
 
   /* branded placeholder shown until a real photo is added */

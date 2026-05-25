@@ -1,14 +1,17 @@
 # Omora — sitio web
 
-Sitio web de una sola página para mostrar las carteras y accesorios tejidos a
-mano de **Omora**. Hecho con [Astro](https://astro.build) (sitio estático) y
-servido con **[Caddy](https://caddyserver.com)** dentro de un contenedor Docker.
+Sitio web de Omora hecho con [Astro](https://astro.build) (SSR / Node) y
+servido como un solo contenedor Docker. Trae un **panel de administración** en
+`/admin` para que la suegrita (o tú) agreguen, editen, oculten, marquen como
+agotadas o eliminen carteras — sin tocar código ni hacer redeploy.
 
 **En producción:** https://omora.alfredsensual.com
+**Panel admin:** https://omora.alfredsensual.com/admin
 
-> El contenedor sirve el sitio como HTTP simple en `127.0.0.1:8092`. El dominio
-> y el HTTPS los maneja el reverse proxy que ya existe en el droplet (el mismo
-> que sirve `managementdoral.alfredsensual.com`).
+> El sitio está detrás del nginx del host. El contenedor escucha en
+> `127.0.0.1:8092`. El catálogo (`purses.json`) y las fotos subidas viven en un
+> **volumen Docker** (`omora_data`), así que los cambios del admin sobreviven
+> a cada `docker compose up --build`.
 
 ---
 
@@ -18,140 +21,135 @@ Requiere [Node.js](https://nodejs.org) 20 o superior.
 
 ```bash
 npm install      # solo la primera vez
-npm run dev      # abre http://localhost:4321
-npm run build    # genera el sitio en  dist/
-npm run preview  # previsualiza la versión de producción
+npm run dev      # http://localhost:4321 (con admin en /admin)
+npm run build    # compila el server SSR a  dist/
+npm run preview  # corre el server compilado
 ```
+
+Para usar el admin en local, exporta antes las variables:
+
+```bash
+# PowerShell
+$env:ADMIN_PASSWORD="test123"; $env:SESSION_SECRET="devsecret"; npm run dev
+```
+
+Sin `ADMIN_PASSWORD` el panel rechazará todos los logins.
 
 ---
 
-## 2. Cómo personalizar el sitio
+## 2. Panel de administración (`/admin`)
 
-Todo lo editable está en `src/data/`.
+Para la suegrita, los pasos son:
 
-### Número de WhatsApp  ← **importante**
-Archivo: `src/data/site.ts`
+1. Entrar a **https://omora.alfredsensual.com/admin**
+2. Escribir la contraseña → quedas dentro por 30 días
+3. Desde el dashboard:
+   - **Nueva cartera** → formulario con nombre, descripción, precio, categoría, estado y fotos
+   - **Editar** (en cada cartera) → cambia textos, sube fotos nuevas, elimina las que no quieras
+   - **Cambiar estado** (menú desplegable):
+     - **Visible** — se muestra normal en la galería
+     - **Sin stock** — sigue apareciendo pero con badge "Agotada" y el botón de WhatsApp cambia a "Pregúntanos cuándo vuelve"
+     - **Oculta** — desaparece de la galería pública
+   - **Eliminar** — borra la cartera y sus fotos (pide confirmación)
 
-```ts
-whatsapp: '56900000000',  // ← reemplazar por el número real
-```
-
-Código de país + número, **solo dígitos** (sin `+`, espacios ni guiones).
-Ejemplo para Chile: `56912345678`. Todos los botones de WhatsApp usan este valor.
-
-### Catálogo de carteras
-Archivo: `src/data/purses.ts` — cada cartera es un bloque con `name`,
-`description`, `price` (en CLP, solo el número), `category` e `image`.
-
-### Agregar fotos reales
-1. Copia la foto en `public/images/purses/` (ej: `cartera-ejemplo.jpg`).
-2. En `purses.ts`, pon la ruta en `image`: `'/images/purses/cartera-ejemplo.jpg'`.
-
-Mientras `image` esté vacío se muestra un marcador "Foto próximamente".
-
-### Texto "Sobre Omora"
-Archivo: `src/components/About.astro` — busca los comentarios `EDITABLE`.
+Los cambios son **instantáneos** — no hay que esperar a un rebuild.
 
 ---
 
 ## 3. Probar el contenedor en local (opcional)
 
-Requiere Docker Desktop corriendo:
+Requiere Docker Desktop corriendo.
 
 ```bash
+cp .env.example .env       # edita los valores
 docker compose up --build
-# luego abre http://localhost:8092
+# abre http://localhost:8092  (y /admin)
 ```
 
 ---
 
 ## 4. Despliegue en omora.alfredsensual.com
 
-El sitio se publica en el **mismo droplet** de DigitalOcean que ya aloja
-`managementdoral.alfredsensual.com`. El contenedor de Omora solo escucha en
-`127.0.0.1:8092` (HTTP local, no público); el reverse proxy que ya existe en el
-droplet se encarga del dominio y del certificado HTTPS.
+El sitio se publica en el **mismo droplet** que aloja
+`managementdoral.alfredsensual.com`. nginx del host enruta el dominio al
+contenedor en `127.0.0.1:8092`.
 
-### Paso 1 — DNS en GoDaddy
-GoDaddy → `alfredsensual.com` → DNS → nuevo registro:
+### Paso 1 — DNS en GoDaddy (solo la primera vez)
+GoDaddy → `alfredsensual.com` → DNS → registro nuevo:
 
-| Tipo | Nombre  | Valor (Datos)                  | TTL     |
+| Tipo | Nombre  | Valor                          | TTL     |
 |------|---------|--------------------------------|---------|
-| A    | `omora` | *IP del droplet* (la misma que `managementdoral`) | 600 seg |
+| A    | `omora` | *IP del droplet*               | 600 seg |
 
 ### Paso 2 — Subir el sitio a GitHub
-1. Crea un repositorio **privado** vacío en https://github.com/new
-   (nombre sugerido: `omora-website`, sin README ni .gitignore).
-2. En tu PC, dentro de la carpeta del proyecto:
-
-   ```bash
-   git remote add origin https://github.com/elalfredsensual/omora-website.git
-   git push -u origin main
-   ```
-
-### Paso 3 — En el droplet: levantar el contenedor
 ```bash
+cd "D:\Trabajo\Carteras Suegrita"
+git push
+```
+
+### Paso 3 — En el droplet
+```bash
+# primera vez: clonar
 git clone https://github.com/elalfredsensual/omora-website.git /opt/omora
 cd /opt/omora
+
+# configurar las claves (solo la primera vez)
+cp .env.example .env
+nano .env                            # pon ADMIN_PASSWORD y SESSION_SECRET fuertes
+#  para SESSION_SECRET puedes usar:  openssl rand -hex 32
+
+# levantar
 docker compose up -d --build
-curl -I http://127.0.0.1:8092      # debe responder "HTTP/1.1 200 OK"
-```
-No hace falta abrir puertos en el firewall: `8092` es solo local.
-
-### Paso 4 — Agregar el sitio a nginx (con HTTPS)
-El droplet usa **nginx** en el host como reverse proxy. Se agrega un archivo de
-configuración nuevo solo para Omora — **el de `managementdoral` no se toca**.
-
-Primero, confirma que el DNS ya resuelve (necesario para el certificado):
-
-```bash
-dig +short omora.alfredsensual.com    # debe devolver la IP del droplet
+curl -I http://127.0.0.1:8092        # debe responder "HTTP/1.1 200 OK"
 ```
 
-Luego, en el droplet:
+### Paso 4 — nginx + HTTPS (solo la primera vez)
+DNS debe estar propagado: `dig +short omora.alfredsensual.com`.
 
 ```bash
 cd /opt/omora
-sudo cp deploy/omora.alfredsensual.com.conf \
-        /etc/nginx/sites-available/omora.alfredsensual.com
-sudo ln -s /etc/nginx/sites-available/omora.alfredsensual.com \
-           /etc/nginx/sites-enabled/
+sudo cp deploy/omora.alfredsensual.com.conf /etc/nginx/sites-available/omora.alfredsensual.com
+sudo ln -s /etc/nginx/sites-available/omora.alfredsensual.com /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 sudo certbot --nginx -d omora.alfredsensual.com
 ```
 
-`certbot` agrega el certificado HTTPS y la redirección HTTP→HTTPS
-automáticamente. Si pregunta por la redirección, elige **2 (Redirect)**.
-
-> Si tu nginx no usa `sites-available/` / `sites-enabled/`, copia el archivo a
-> `/etc/nginx/conf.d/omora.alfredsensual.com.conf` y omite el paso del `ln -s`.
-
 ### Paso 5 — Verificar
-Abre **https://omora.alfredsensual.com** (debe cargar con candado HTTPS).
+- Visita **https://omora.alfredsensual.com** → carga con HTTPS
+- Visita **https://omora.alfredsensual.com/admin** → pide la contraseña
 
 ### Actualizar el sitio publicado
+Tras cambios en el código (no necesario para cambios de catálogo, que se hacen
+desde el admin):
 ```bash
 # en tu PC
-git add -A && git commit -m "Actualiza contenido" && git push
+git push
 
 # en el droplet
 cd /opt/omora && git pull && docker compose up -d --build
 ```
+El volumen `omora_data` no se borra — el catálogo y las fotos persisten.
 
 ---
 
 ## Estructura del proyecto
 
 ```
-├─ public/images/      logos, favicon, fotos de carteras
+├─ public/images/      logos, favicon, fotos del catálogo semilla
 ├─ src/
-│  ├─ data/            site.ts (config) · purses.ts (catálogo)
-│  ├─ components/      secciones de la página
-│  ├─ layouts/         plantilla base (HTML, SEO)
-│  ├─ pages/index.astro  la página única
-│  └─ styles/          estilos globales y tokens de diseño
-├─ deploy/             config de nginx para el droplet
-├─ Dockerfile          build (Node) → servir con Caddy
-├─ Caddyfile           servidor estático en el puerto 80 del contenedor
-└─ docker-compose.yml  publica el sitio en 127.0.0.1:8092
+│  ├─ data/purses.ts   tipos + catálogo semilla (primer arranque)
+│  ├─ lib/
+│  │  ├─ db.ts         lectura/escritura del JSON + fotos en /data
+│  │  └─ auth.ts       sesiones firmadas con HMAC
+│  ├─ middleware.ts    protege /admin
+│  ├─ components/      secciones del sitio público
+│  ├─ layouts/         AdminLayout + Layout
+│  ├─ pages/
+│  │  ├─ index.astro   sitio público
+│  │  ├─ admin/        panel (login, dashboard, nueva, editar, etc.)
+│  │  └─ uploads/[file].ts  sirve fotos desde el volumen
+│  └─ styles/          tokens globales + estilos admin
+├─ deploy/             config de nginx (se copia al droplet)
+├─ Dockerfile          build (Node) → runtime (Node)
+└─ docker-compose.yml  un contenedor + volumen omora_data
 ```

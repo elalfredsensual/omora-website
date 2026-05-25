@@ -1,0 +1,52 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource/nunito-sans/400.css';
+import '@fontsource/nunito-sans/600.css';
+import '@fontsource/nunito-sans/700.css';
+import '@fontsource/nunito-sans/800.css';
+import '../styles/global.css';
+import '../styles/admin.css';
+
+interface Props {
+  title?: string;
+  hideNav?: boolean;
+}
+
+const { title = 'Panel · Omora', hideNav = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+    <meta name="theme-color" content="#fbf6ef" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="admin-body">
+    {
+      !hideNav && (
+        <header class="admin-nav">
+          <a href="/admin" class="admin-nav__brand">
+            <img src="/images/logo-icon.png" alt="" width="32" height="20" />
+            <span>
+              <strong>Omora</strong> · panel
+            </span>
+          </a>
+          <nav>
+            <a href="/admin">Carteras</a>
+            <a href="/" target="_blank" rel="noopener">
+              Ver sitio ↗
+            </a>
+            <form method="post" action="/admin/logout" class="admin-nav__logout">
+              <button type="submit">Salir</button>
+            </form>
+          </nav>
+        </header>
+      )
+    }
+    <slot />
+  </body>
+</html>

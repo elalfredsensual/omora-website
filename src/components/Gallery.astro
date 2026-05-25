@@ -1,7 +1,10 @@
 ---
-import { purses, categories } from '../data/purses';
+import { listPublic, listPublicCategories } from '../lib/db';
 import { site } from '../data/site';
 import PurseCard from './PurseCard.astro';
+
+const purses = await listPublic();
+const categories = await listPublicCategories();
 ---
 
 <section class="section gallery" id="galeria">
@@ -95,7 +98,10 @@ import PurseCard from './PurseCard.astro';
     </div>
 
     <div class="lightbox__info">
-      <span class="lightbox__cat" id="lb-cat"></span>
+      <div class="lightbox__head">
+        <span class="lightbox__cat" id="lb-cat"></span>
+        <span class="lightbox__status" id="lb-status" hidden>Agotada</span>
+      </div>
       <h3 class="lightbox__name" id="lb-name"></h3>
       <p class="lightbox__desc" id="lb-desc"></p>
       <div class="lightbox__price" id="lb-price"></div>
@@ -112,7 +118,7 @@ import PurseCard from './PurseCard.astro';
             d="M16 3C9 3 3.5 8.5 3.5 15.5c0 2.4.7 4.7 1.9 6.7L3 29l7-1.8c1.9 1 4 1.6 6.1 1.6 7 0 12.5-5.5 12.5-12.5S23 3 16 3Zm0 22.8c-1.9 0-3.7-.5-5.3-1.5l-.4-.2-4.1 1.1 1.1-4-.3-.4a10.2 10.2 0 0 1-1.6-5.6c0-5.7 4.7-10.3 10.5-10.3 5.8 0 10.5 4.6 10.5 10.3S21.8 25.8 16 25.8Zm5.8-7.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.7-4.4-3.8-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.6 0-.2-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9 0 1.7 1.2 3.3 1.4 3.6.2.2 2.5 3.9 6.1 5.4 2.3 1 3.2 1.1 4.3.9.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"
           ></path>
         </svg>
-        Me interesa esta cartera
+        <span id="lb-wa-text">Me interesa esta cartera</span>
       </a>
       <p class="lightbox__hint">
         Se abrirá WhatsApp con un mensaje listo para enviar.
@@ -300,12 +306,30 @@ import PurseCard from './PurseCard.astro';
     padding: clamp(1.6rem, 3vw, 2.6rem);
     overflow-y: auto;
   }
+  .lightbox__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
   .lightbox__cat {
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--rose-deep);
+  }
+  .lightbox__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.7em;
+    background: var(--cocoa);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: var(--radius-pill);
   }
   .lightbox__name {
     font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.2rem);
@@ -445,6 +469,8 @@ import PurseCard from './PurseCard.astro';
   const lbDesc = document.getElementById('lb-desc');
   const lbPrice = document.getElementById('lb-price');
   const lbWa = document.getElementById('lb-wa');
+  const lbWaText = document.getElementById('lb-wa-text');
+  const lbStatus = document.getElementById('lb-status');
   let visible = [];
   let idx = 0;
   let lastFocus = null;
@@ -498,7 +524,12 @@ import PurseCard from './PurseCard.astro';
       lbThumbs.innerHTML = '';
       lbThumbs.hidden = true;
     }
-    const msg = `Hola Omora 🌿 Me interesa la cartera "${d.name}" (${d.price}). ¿Me puedes dar más información?`;
+    const oos = d.status === 'out-of-stock';
+    lbStatus.hidden = !oos;
+    lbWaText.textContent = oos ? 'Pregúntanos cuándo vuelve' : 'Me interesa esta cartera';
+    const msg = oos
+      ? `Hola Omora 🌿 Me interesa la cartera "${d.name}" que está agotada. ¿Me puedes avisar cuándo vuelve?`
+      : `Hola Omora 🌿 Me interesa la cartera "${d.name}" (${d.price}). ¿Me puedes dar más información?`;
     lbWa.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
   }
 
